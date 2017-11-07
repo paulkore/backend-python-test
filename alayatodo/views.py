@@ -66,7 +66,7 @@ def todo_JSON(id):
 
 @app.route('/todo', methods=['GET'])
 @app.route('/todo/', methods=['GET'])
-def todos():
+def todo_list():
     if not logged_in():
         return redirect('/login')
 
@@ -75,8 +75,7 @@ def todos():
 
     todos = find_todos(user_id(), page)
     num_pages = get_todos_page_count(user_id())
-
-    return render_template('todos.html', todos=todos, num_pages=num_pages)
+    return render_template('todo_list.html', todos=todos, num_pages=num_pages)
 
 
 @app.route('/todo', methods=['POST'])
