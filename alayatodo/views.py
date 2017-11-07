@@ -52,11 +52,10 @@ def logout():
 
 @app.route('/todo/<id>', methods=['GET'])
 def todo(id):
-    if not session.get('logged_in'):
+    if not logged_in():
         return redirect('/login')
 
-    user_id = session['user']['id']
-    todo = find_todo(user_id, id)
+    todo = find_todo(user_id(), id)
     if not todo:
         return redirect('/todo')
 
@@ -66,18 +65,17 @@ def todo(id):
 @app.route('/todo', methods=['GET'])
 @app.route('/todo/', methods=['GET'])
 def todos():
-    if not session.get('logged_in'):
+    if not logged_in():
         return redirect('/login')
 
-    user_id = session['user']['id']
-    todos = find_todos(user_id)
+    todos = find_todos(user_id())
     return render_template('todos.html', todos=todos)
 
 
 @app.route('/todo', methods=['POST'])
 @app.route('/todo/', methods=['POST'])
 def todos_POST():
-    if not session.get('logged_in'):
+    if not logged_in():
         return redirect('/login')
 
     description = request.form.get('description', '')
@@ -85,20 +83,24 @@ def todos_POST():
         alert_warning(u'Please enter a description')
         return redirect('/todo')
 
-    user_id = session['user']['id']
-    create_todo(user_id, description)
-
+    create_todo(user_id(), description)
     alert_success(u'TODO record created')
     return redirect('/todo')
 
 
 @app.route('/todo/<id>', methods=['POST'])
 def todo_delete(id):
-    if not session.get('logged_in'):
+    if not logged_in():
         return redirect('/login')
 
-    user_id = session['user']['id']
-    delete_todo(user_id, id)
-
+    delete_todo(user_id(), id)
     alert_success(u'TODO record deleted')
     return redirect('/todo')
+
+
+def logged_in():
+    return session['logged_in']
+
+
+def user_id():
+    return session['user']['id']
