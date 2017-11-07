@@ -41,6 +41,7 @@ def login_POST():
 def logout():
     session.pop('logged_in', None)
     session.pop('user', None)
+    session.pop('last_page', None)
     return redirect('/')
 
 
@@ -70,9 +71,17 @@ def todo_list():
     if not logged_in():
         return redirect('/login')
 
-    page_arg = request.args.get('page')
-    page = max(str_to_int(page_arg, 1), 1)
+    last_page = session.get('last_page')
+    if last_page is None:
+        last_page = 1
 
+    page_arg = request.args.get('page')
+    if empty(page_arg):
+        page = last_page
+    else:
+        page = max(str_to_int(page_arg, 1), 1)
+
+    session['last_page'] = page
     todos = find_todos(user_id(), page)
     num_pages = get_todos_page_count(user_id())
     return render_template('todo_list.html', todos=todos, num_pages=num_pages)
