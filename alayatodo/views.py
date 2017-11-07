@@ -8,6 +8,7 @@ from flask import (
 
 from database import *
 from alerts import *
+from common import *
 
 
 @app.route('/')
@@ -69,8 +70,13 @@ def todos():
     if not logged_in():
         return redirect('/login')
 
-    todos = find_todos(user_id())
-    return render_template('todos.html', todos=todos)
+    page_arg = request.args.get('page')
+    page = max(str_to_int(page_arg, 1), 1)
+
+    todos = find_todos(user_id(), page)
+    num_pages = get_todos_page_count(user_id())
+
+    return render_template('todos.html', todos=todos, num_pages=num_pages)
 
 
 @app.route('/todo', methods=['POST'])

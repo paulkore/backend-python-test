@@ -39,6 +39,9 @@ class Todo:
         }
 
 
+PAGE_SIZE = 10
+
+
 def find_user(username, password):
     if empty(username):
         raise ValueError('username must be provided')
@@ -53,11 +56,22 @@ def find_user(username, password):
     return User(row)
 
 
-def find_todos(user_id):
+def get_todos_page_count(user_id):
     if user_id is None:
         raise ValueError('user_id must be provided')
 
-    cur = g.db.execute("SELECT * FROM todos WHERE user_id = '%s'" % user_id)
+    cur = g.db.execute("SELECT count(*) as count FROM todos where user_id = '%s'" % user_id)
+    count = cur.fetchone()['count']
+    return count / PAGE_SIZE + 1
+
+
+def find_todos(user_id, page):
+    if user_id is None:
+        raise ValueError('user_id must be provided')
+    if page is None or page < 0:
+        raise ValueError('page must be a number greater than zero')
+
+    cur = g.db.execute("SELECT * FROM todos WHERE user_id = '%s' LIMIT '%s' OFFSET '%s'" % (user_id, PAGE_SIZE, PAGE_SIZE * (page - 1)))
     rows = cur.fetchall()
 
     return list(map((lambda row: Todo(row)), rows))

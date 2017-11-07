@@ -12,6 +12,7 @@ from alayatodo import app
 
 
 def _run_sql(filename):
+    print 'Executing SQL script: ' + filename
     try:
         subprocess.check_output(
             "sqlite3 %s < %s" % (app.config['DATABASE'], filename),
@@ -29,6 +30,7 @@ if __name__ == '__main__':
         _run_sql('resources/000_initial_schema.sql')
         _run_sql('resources/001_initial_data.sql')
         _run_sql('resources/002_migration_for_task2.sql')
-        print "AlayaTodo: Database initialized."
+        _run_sql('resources/003_migration_for_task5.sql')
+        print 'AlayaTodo: Database initialized.'
     else:
         app.run(use_reloader=True)
