@@ -85,5 +85,10 @@ def create_todo(user_id, description):
 
 
 def delete_todo(user_id, todo_id):
+    if user_id is None:
+        raise ValueError('user_id must be provided')
+    if todo_id is None:
+        raise ValueError('todo_id must be provided')
+
     g.db.execute("DELETE FROM todos WHERE id = '%s' AND user_id = '%s'" % (todo_id, user_id))
     g.db.commit()
