@@ -2,26 +2,24 @@
 
 {% block content %}
 <div class="col-md-4 col-md-offset-4">
-    <h1>Todo:</h1>
+    <h1>Todo details</h1>
     <table class="table table-striped">
-        <th>#</th><th>User</th><th>Description</th><th>Completed</th><th></th><th></th>
-        <tr>
-            <td>{{ todo.id }}</td>
-            <td>{{ todo.user_id }}</td>
-            <td>{{ todo.description }}</td>
-            <td>{{ 'Yes' if todo.completed else '' }}</td>
-            <td>
-                <form method="post" action="{{ url_for('todo_update', id=todo.id) }}">
-                    <button type="submit" class="btn btn-xs btn-success"><span class="glyphicon glyphicon-ok glyphicon-white"></span></button>
-                </form>
-            </td>
-            <td>
-                <form method="post" action="{{ url_for('todo_delete', id=todo.id) }}">
-                    <button type="submit" class="btn btn-xs btn-danger"><span class="glyphicon glyphicon-remove glyphicon-white"></span></button>
-                </form>
-            </td>
-        </tr>
+        <tr><td>ID</td><td>{{ todo.id }}</td></tr>
+        <tr><td>User ID</td><td>{{ todo.user_id }}</td></tr>
+        <tr><td>Description</td><td>{{ todo.description }}</td></tr>
+        <tr><td>Completed</td><td>{{ 'Yes' if todo.completed else '' }}</td></tr>
     </table>
+    <div class="row">
+        <div class="pull-left" style="margin: 0 10px 0 20px;">
+            <form method="post" action="{{ url_for('todo_update', id=todo.id) }}">
+                <button type="submit" class="btn btn-small btn-success">Mark as completed</button>
+            </form>
+        </div>
+        <div class="pull-left">
+            <form method="post" action="{{ url_for('todo_delete', id=todo.id) }}">
+                <button type="submit" class="btn btn-small btn-danger">Delete Todo</button>
+            </form>
+        </div>
+    </div>
 </div>
-
 {% endblock %}
