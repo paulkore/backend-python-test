@@ -108,8 +108,8 @@ def todo_delete(id):
 
 
 def logged_in():
-    return session['logged_in']
+    return session.get('logged_in')
 
 
 def user_id():
-    return session['user']['id']
+    return session.get('user')['id']
