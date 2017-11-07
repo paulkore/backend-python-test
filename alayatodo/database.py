@@ -22,17 +22,20 @@ class Todo:
     id = None
     user_id = None
     description = None
+    completed = None
 
     def __init__(self, row):
         self.id = row['id']
         self.user_id = row['user_id']
         self.description = row['description']
+        self.completed = True if row['completed'] else False
 
     def to_dict(self):
         return {
             'id': self.id,
             'user_id': self.user_id,
             'description': self.description,
+            'completed': self.completed,
         }
 
 
@@ -91,4 +94,14 @@ def delete_todo(user_id, todo_id):
         raise ValueError('todo_id must be provided')
 
     g.db.execute("DELETE FROM todos WHERE id = '%s' AND user_id = '%s'" % (todo_id, user_id))
+    g.db.commit()
+
+
+def mark_completed(user_id, todo_id):
+    if user_id is None:
+        raise ValueError('user_id must be provided')
+    if todo_id is None:
+        raise ValueError('todo_id must be provided')
+
+    g.db.execute("UPDATE todos SET completed=1 WHERE id = '%s' AND user_id = '%s'" % (todo_id, user_id))
     g.db.commit()

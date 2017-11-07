@@ -6,14 +6,7 @@ from flask import (
     session,
 )
 
-from database import (
-    find_user,
-    find_todos,
-    find_todo,
-    create_todo,
-    delete_todo,
-)
-
+from database import *
 from alerts import *
 
 
@@ -82,7 +75,7 @@ def todos():
 
 @app.route('/todo', methods=['POST'])
 @app.route('/todo/', methods=['POST'])
-def todos_POST():
+def todo_create():
     if not logged_in():
         return redirect('/login')
 
@@ -92,17 +85,25 @@ def todos_POST():
         return redirect('/todo')
 
     create_todo(user_id(), description)
-    alert_success(u'TODO record created')
+    alert_success(u'Todo created')
     return redirect('/todo')
 
 
 @app.route('/todo/<id>', methods=['POST'])
+def todo_update(id):
+    if not logged_in():
+        return redirect('/login')
+    mark_completed(user_id(), id)
+    alert_success(u'Todo marked as completed')
+    return redirect('/todo')
+
+
+@app.route('/todo/<id>/delete', methods=['POST'])
 def todo_delete(id):
     if not logged_in():
         return redirect('/login')
-
     delete_todo(user_id(), id)
-    alert_success(u'TODO record deleted')
+    alert_success(u'Todo deleted')
     return redirect('/todo')
 
 
