@@ -61,7 +61,7 @@ def get_todos_page_count(user_id):
 
     cur = g.db.execute("SELECT count(*) as count FROM todos where user_id = ?", [user_id])
     count = cur.fetchone()['count']
-    return count / PAGE_SIZE + 1
+    return count / PAGE_SIZE + (1 if count % PAGE_SIZE else 0)
 
 
 def find_todos(user_id, page):
