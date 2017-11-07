@@ -54,12 +54,20 @@ def logout():
 def todo(id):
     if not logged_in():
         return redirect('/login')
-
     todo = find_todo(user_id(), id)
     if not todo:
         return redirect('/todo')
-
     return render_template('todo.html', todo=todo)
+
+
+@app.route('/todo/<id>/json', methods=['GET'])
+def todo_JSON(id):
+    if not logged_in():
+        return redirect('/login')
+    todo = find_todo(user_id(), id)
+    if not todo:
+        return redirect('/todo')
+    return render_template('todo_json.html', todo=todo.to_dict())
 
 
 @app.route('/todo', methods=['GET'])

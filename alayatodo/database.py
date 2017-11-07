@@ -28,6 +28,13 @@ class Todo:
         self.user_id = row['user_id']
         self.description = row['description']
 
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'user_id': self.user_id,
+            'description': self.description,
+        }
+
 
 def find_user(username, password):
     if empty(username):
