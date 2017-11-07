@@ -48,8 +48,7 @@ def find_user(username, password):
     if empty(password):
         raise ValueError('password must be provided')
 
-    sql = "SELECT id, username FROM users WHERE username = '%s' AND password = '%s'";
-    cur = g.db.execute(sql % (username, password))
+    cur = g.db.execute("SELECT id, username FROM users WHERE username = ? AND password = ?", [username, password])
     row = cur.fetchone()
     if not row:
         return None
@@ -60,7 +59,7 @@ def get_todos_page_count(user_id):
     if user_id is None:
         raise ValueError('user_id must be provided')
 
-    cur = g.db.execute("SELECT count(*) as count FROM todos where user_id = '%s'" % user_id)
+    cur = g.db.execute("SELECT count(*) as count FROM todos where user_id = ?", [user_id])
     count = cur.fetchone()['count']
     return count / PAGE_SIZE + 1
 
@@ -71,7 +70,7 @@ def find_todos(user_id, page):
     if page is None or page < 0:
         raise ValueError('page must be a number greater than zero')
 
-    cur = g.db.execute("SELECT * FROM todos WHERE user_id = '%s' LIMIT '%s' OFFSET '%s'" % (user_id, PAGE_SIZE, PAGE_SIZE * (page - 1)))
+    cur = g.db.execute("SELECT * FROM todos WHERE user_id = ? LIMIT ? OFFSET ?", [user_id, PAGE_SIZE, PAGE_SIZE * (page-1)])
     rows = cur.fetchall()
 
     return list(map((lambda row: Todo(row)), rows))
@@ -83,7 +82,7 @@ def find_todo(user_id, todo_id):
     if todo_id is None:
         raise ValueError('todo_id must be provided')
 
-    cur = g.db.execute("SELECT * FROM todos WHERE id = '%s' AND user_id = '%s'" % (todo_id, user_id))
+    cur = g.db.execute("SELECT * FROM todos WHERE id = ? AND user_id = ?", [todo_id, user_id])
     row = cur.fetchone()
     if not row:
         return None
@@ -97,7 +96,7 @@ def create_todo(user_id, description):
     if empty(description):
         raise ValueError('description must be provided')
 
-    g.db.execute("INSERT INTO todos (user_id, description) VALUES ('%s', '%s')" % (user_id, description))
+    g.db.execute("INSERT INTO todos (user_id, description, completed) VALUES (?, ?, ?)", [user_id, description, 0])
     g.db.commit()
 
 
@@ -107,7 +106,7 @@ def delete_todo(user_id, todo_id):
     if todo_id is None:
         raise ValueError('todo_id must be provided')
 
-    g.db.execute("DELETE FROM todos WHERE id = '%s' AND user_id = '%s'" % (todo_id, user_id))
+    g.db.execute("DELETE FROM todos WHERE id = ? AND user_id = ?", [todo_id, user_id])
     g.db.commit()
 
 
@@ -117,5 +116,5 @@ def mark_completed(user_id, todo_id):
     if todo_id is None:
         raise ValueError('todo_id must be provided')
 
-    g.db.execute("UPDATE todos SET completed=1 WHERE id = '%s' AND user_id = '%s'" % (todo_id, user_id))
+    g.db.execute("UPDATE todos SET completed=1 WHERE id = ? AND user_id = ?", [todo_id, user_id])
     g.db.commit()
