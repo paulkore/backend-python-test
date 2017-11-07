@@ -7,7 +7,7 @@
         <tr><td>ID</td><td>{{ todo.id }}</td></tr>
         <tr><td>User ID</td><td>{{ todo.user_id }}</td></tr>
         <tr><td>Description</td><td>{{ todo.description }}</td></tr>
-        <tr><td>Completed</td><td>{{ 'Yes' if todo.completed else '' }}</td></tr>
+        <tr><td>Completed</td><td>{{ 'Yes' if todo.completed else 'No' }}</td></tr>
     </table>
     <div class="row">
         <div class="pull-left" style="margin: 0 10px 0 20px;">
