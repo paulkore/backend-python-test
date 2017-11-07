@@ -4,7 +4,6 @@ from flask import (
     render_template,
     request,
     session,
-    flash,
 )
 
 from database import (
@@ -14,6 +13,8 @@ from database import (
     create_todo,
     delete_todo,
 )
+
+from alerts import *
 
 
 @app.route('/')
@@ -81,11 +82,13 @@ def todos_POST():
 
     description = request.form.get('description', '')
     if not description.strip():
-        flash(u'Please enter a description', 'error')
+        alert_warning(u'Please enter a description')
         return redirect('/todo')
 
     user_id = session['user']['id']
     create_todo(user_id, description)
+
+    alert_success(u'TODO record created')
     return redirect('/todo')
 
 
@@ -96,4 +99,6 @@ def todo_delete(id):
 
     user_id = session['user']['id']
     delete_todo(user_id, id)
+
+    alert_success(u'TODO record deleted')
     return redirect('/todo')
